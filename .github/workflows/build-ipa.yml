@@ -13,7 +13,7 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 90
     env:
-      DEVELOPER_DIR: /Applications/Xcode_16.2.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
     steps:
       - uses: actions/checkout@v4
       - name: Set up Java 17
@@ -28,6 +28,9 @@ jobs:
           xcodebuild -version
           xcrun --sdk iphoneos --show-sdk-version
           java -version
+      - name: Check launch storyboard
+        run: |
+          xcrun ibtool --errors --warnings --notices --minimum-deployment-target 11.0 --target-device iphone --target-device ipad --output-format human-readable-text --compile "$RUNNER_TEMP/LaunchScreen.storyboardc" ios/data/Base.lproj/LaunchScreen.storyboard
       - name: Build unsigned arm64 IPA
         run: bash ./gradlew :ios:createIPA -Probovm.iosSkipSigning=true -Probovm.archs=arm64 --no-daemon --stacktrace
       - name: Collect IPA
