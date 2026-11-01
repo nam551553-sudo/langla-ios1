@@ -3529,7 +3529,7 @@ public class GameSrc extends MainScreen {
                             GameM.gI().canvas.graphics.shapeRenderer.setColor(Color.WHITE); // Red line
                         }
                         if (!entity.j()) {
-                            GameM.gI().canvas.graphics.shapeRenderer.line(
+                            var1.drawWorldLine(
                                     (Char.gI().cx + var1.a) * DataCenter.gI().zoomLevel,
                                     (Char.gI().c() + (Char.gI().height / 2) + var1.b) * DataCenter.gI().zoomLevel,
                                     (entity.cx + var1.a) * DataCenter.gI().zoomLevel,

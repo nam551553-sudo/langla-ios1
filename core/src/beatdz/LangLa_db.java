@@ -5,7 +5,9 @@ package beatdz;
          try {
             synchronized(LangLa_cz.cT) {
                try {
-                  LangLa_cz.cT.wait(3600000L);
+                  while (LangLa_cz.cW.isEmpty() && !LangLa_ep.a()) {
+                     LangLa_cz.cT.wait(1000L);
+                  }
                } catch (Exception var4) {
                   Utlis.println(var4);
                }

@@ -39,7 +39,7 @@ jobs:
           mkdir -p dist
           count=0
           while IFS= read -r -d '' ipa; do
-            cp "$ipa" "dist/LangLa-unsigned-${count}.ipa"
+            cp "$ipa" "dist/LangLa-iOS1-build2-unsigned-${count}.ipa"
             count=$((count + 1))
           done < <(find ios/build -type f -name '*.ipa' -print0)
           if [ "$count" -eq 0 ]; then
@@ -50,7 +50,7 @@ jobs:
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: LangLa-unsigned-IPA
+          name: LangLa-iOS1-build2-unsigned
           path: dist/*.ipa
           if-no-files-found: error
           retention-days: 14

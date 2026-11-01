@@ -384,11 +384,13 @@ public class LangLa_cz extends XYEntity {
                     ? CostumeAssets.decode(Binary.read(var0.e), var0.d) : Binary.createImage(var0.e);
             if (var1 != null) {
                 var0.g.put(var0.a, var1);
+                ImageRequestGate.finish(var0.e, true, System.currentTimeMillis());
                 return;
             }
 
             cX.add(var0);
         } catch (Exception var4) {
+            ImageRequestGate.finish(var0.e, false, System.currentTimeMillis());
             return;
         } finally {
             if (var1 != null) {
@@ -431,8 +433,10 @@ public class LangLa_cz extends XYEntity {
                 return;
             }
         } catch (Exception var6) {
+            com.badlogic.gdx.Gdx.app.error("Images", "Could not load " + var0.d, var6);
             return;
         } finally {
+            ImageRequestGate.finish(var0.e, var1 != null, System.currentTimeMillis());
             if (var1 != null) {
                 GameSrc.gI().cb.add(var1);
             }

@@ -25,7 +25,7 @@ public class LangLa_fq {
 
    public static mImage a(int var0) {
       mImage var1;
-      if ((var1 = (mImage)e.get((short)var0)) == null) {
+      if ((var1 = (mImage)e.get((short)var0)) == null || var1 == a) {
          a(var0, "client", e);
          var1 = a;
       }
@@ -34,7 +34,7 @@ public class LangLa_fq {
    }
    public static mImage reqestIconChar(int var0) {
       mImage var1;
-      if ((var1 = (mImage)g.get((short)var0)) == null) {
+      if ((var1 = (mImage)g.get((short)var0)) == null || var1 == a) {
          a(var0, "char", g);
          var1 = a;
       }
@@ -77,7 +77,7 @@ public class LangLa_fq {
       try {
          Short var9 = new Short((short)var1);
          mImage var10;
-         if ((var10 = (mImage)f.get(var9)) != null) {
+         if ((var10 = (mImage)f.get(var9)) != null && var10 != a) {
             var0.a(var10, 0, 0, var10.c, var10.d, var2, var3 - var5 / 2, var4 - var6, var5 * DataCenter.gI().zoomLevel, var6 * DataCenter.gI().zoomLevel, 20);
          } else {
             a(var1, "tree", f);
@@ -105,7 +105,7 @@ public class LangLa_fq {
       try {
          Short var15 = new Short((short)var1);
          mImage var16;
-         if ((var16 = (mImage)var7.get(var15)) == null) {
+         if ((var16 = (mImage)var7.get(var15)) == null || var16 == a) {
             a(var1, var6, var7);
          }
 
@@ -137,7 +137,7 @@ public class LangLa_fq {
       try {
          Short var20 = new Short((short)var1);
          mImage var22;
-         if ((var22 = (mImage)var9.get(var20)) == null) {
+         if ((var22 = (mImage)var9.get(var20)) == null || var22 == a) {
             a(var1, var8, var9);
          }
 
@@ -221,7 +221,7 @@ public class LangLa_fq {
       try {
          Short var19 = new Short((short)var1);
          Object var20;
-         if ((var20 = var13.get(var19)) != null) {
+         if ((var20 = var13.get(var19)) != null && var20 != a) {
             Graphics var10000;
             mImage var10001;
             mImage var18;
@@ -267,7 +267,7 @@ public class LangLa_fq {
       try {
          Short var15 = new Short((short)var1);
          Object var16;
-         if ((var16 = var8.get(var15)) != null) {
+         if ((var16 = var8.get(var15)) != null && var16 != a) {
             mImage var13 = (mImage)var16;
             boolean var14 = true;
             var0.k = var14;
@@ -412,6 +412,8 @@ public class LangLa_fq {
    }
 
    private static void a(int var0, String var1, Hashtable var2) {
+      String requestKey = var1.equals("tree") ? var1 + "_" + var0 : var1 + "_icon_" + var0;
+      if (!ImageRequestGate.start(requestKey, System.currentTimeMillis())) return;
       mImage var3 = a;
       var2.put(new Short((short)var0), var3);
       String imagePath = "icon" + var1.substring(0, 1).toUpperCase() + var1.substring(1, var1.length()) + "/" + var0 + ".png";
@@ -428,6 +430,8 @@ public class LangLa_fq {
 
          LangLa_cz.cW.add(var4);
          LangLa_cz.S();
+      } else {
+         ImageRequestGate.finish(requestKey, false, System.currentTimeMillis());
       }
 
    }

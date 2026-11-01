@@ -241,13 +241,13 @@ public abstract class Canvas implements Screen {
                         } else {
                             var4.getSpriteBatch().begin();
                             var4.getSpriteBatch().enableBlending();
-                            var4.shapeRenderer.begin(ShapeType.Line);
 
                         }
                     } catch (Exception var10) {
                         Utlis.println(var10);
                     }
 
+                    Graphics.inHudPass = false;
                     this.graphics.clean();
                     this.graphics.setClip(0, 0, DataCenter.gI().widthScreen, DataCenter.gI().heightScreen);
                     this.paint(this.graphics);
@@ -285,7 +285,6 @@ public abstract class Canvas implements Screen {
                             var4.getSpriteBatch().end();
                             var4 = this.graphics;
 
-                            var4.shapeRenderer.end();
                             if (!var4.g()) {
                                 var4.getSpriteBatch().flush();
                                 ScissorStack.popScissors();
@@ -433,6 +432,18 @@ public abstract class Canvas implements Screen {
     }
 
     public void resize(int var1, int var2) {
+        if (var1 <= 0 || var2 <= 0) return;
+        this.width = var1;
+        this.height = var2;
+        this.hudCamera.setToOrtho(true, var1, var2);
+        this.hudCamera.update();
+        int zoom = Math.max(1, DataCenter.gI().zoomLevel);
+        DataCenter.gI().widthHud = var1 / zoom;
+        DataCenter.gI().heightHud = var2 / zoom;
+        this.applyZoomScreen();
+        if (DataCenter.gI().currentScreen != null) {
+            DataCenter.gI().currentScreen.setSize(DataCenter.gI().widthHud, DataCenter.gI().heightHud);
+        }
         this.stage.getViewport().update(this.width, this.height, true);
     }
 

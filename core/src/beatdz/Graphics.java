@@ -1244,6 +1244,22 @@ public class Graphics {
         this.b = 0;
     }
 
+    public void drawWorldLine(float x1, float y1, float x2, float y2) {
+        // SpriteBatch and ShapeRenderer own different shaders. Never flush
+        // either renderer while the other's shader is active (MetalANGLE).
+        SpriteBatch batch = getSpriteBatch();
+        boolean resume = batch.isDrawing();
+        if (resume) batch.end();
+        try {
+            shapeRenderer.setProjectionMatrix(canvas.camera.combined);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.line(x1, y1, x2, y2);
+        } finally {
+            if (shapeRenderer.isDrawing()) shapeRenderer.end();
+            if (resume) batch.begin();
+        }
+    }
+
     public void dispose() {
         try {
             if (this.spriteBatch != null) {

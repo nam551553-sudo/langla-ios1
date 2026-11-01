@@ -10,13 +10,17 @@ import com.tgame.model.Caption;
 
 import beatdz.AppListener;
 import beatdz.Utlis;
+import beatdz.ClientConfig;
 
 public class IOSLauncher extends IOSApplication.Delegate {
     @Override
     protected IOSApplication createApplication() {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
         Caption.loadVN();
-        Utlis.ipsv = "http://103.90.224.216/serverlist.txt";
+        Utlis.ipsv = ClientConfig.SERVER_LIST_URL;
+        config.orientationPortrait = false;
+        config.orientationLandscape = true;
+        config.preferredFramesPerSecond = 60;
         config.hdpiMode = HdpiMode.Pixels;
         return new IOSApplication(AppListener.gI(), config);
     }

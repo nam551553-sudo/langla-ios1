@@ -53,8 +53,12 @@ public class AutoPro {
 
     public static mImage getIconTool3() {
         try {
-            if (iconTool3 == null || iconTool3.b() == null) {
-                byte[] background = Gdx.files.internal(ClientConfig.LOCAL_BACKGROUND).readBytes();
+            // This is also called by the loader thread: do not create a GL
+            // texture here. The bundled legacy background is always available.
+            if (iconTool3 == null || (iconTool3.a == null && iconTool3.b == null)) {
+                byte[] background = Gdx.files.internal(ClientConfig.LOCAL_BACKGROUND).exists()
+                        ? Gdx.files.internal(ClientConfig.LOCAL_BACKGROUND).readBytes()
+                        : Utlis.a(Gdx.files.internal("resource/a").readBytes());
                 iconTool3 = mImage.a(background, 0, 0);
             }
 
