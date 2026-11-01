@@ -1,6 +1,6 @@
 # Server synchronization and black-screen regression check
 
-Status: NOT READY FOR IPA. The map 1 rendering check fails because its background PNGs are absent from both supplied asset sources and the live image host. No replacement art or unrelated same-number icon was used.
+Status: Build 3 authorized by the user with missing-asset maps excluded from the acceptance check. Map 1 remains a known rendering failure. The map 1 rendering check fails because its background PNGs are absent from both supplied asset sources and the live image host. No replacement art or unrelated same-number icon was used.
 
 ## Changes
 
@@ -36,4 +36,4 @@ Expected logical map block dimensions (image zoom variants can be scaled):
 
 Checked supplied directories: xampp/htdocs/langlaapp/img and Desktop/htdocszzz/htdocs/img. The current host http://160.250.128.28/img/zoom2/iconTree/ returns HTTP 404 for these images. A chest icon named 432.png in another category is not this map background.
 
-The existing successful IPA is build 2; it does not contain this unbuilt repair. Supply the matching missing map images, repeat ServerMapSceneCheck for map 1, then build a new unsigned IPA. This repair branch does not trigger the main/master push workflow.
+Build 3 includes this repair. The user explicitly requested an unsigned IPA while skipping the maps with missing images. This does not remove or block those maps in game, and they may still show a black background. No map PNGs were invented or substituted. Full map 1 rendering still requires the original missing assets and a repeat of ServerMapSceneCheck. The Windows Java compilation passed; physical iPhone login was not tested.
