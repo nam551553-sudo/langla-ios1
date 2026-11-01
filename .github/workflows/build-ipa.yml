@@ -1,0 +1,53 @@
+name: Build unsigned IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 90
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.2.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Check build tools
+        run: |
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+          java -version
+      - name: Build unsigned arm64 IPA
+        run: bash ./gradlew :ios:createIPA -Probovm.iosSkipSigning=true -Probovm.archs=arm64 --no-daemon --stacktrace
+      - name: Collect IPA
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          count=0
+          while IFS= read -r -d '' ipa; do
+            cp "$ipa" "dist/LangLa-unsigned-${count}.ipa"
+            count=$((count + 1))
+          done < <(find ios/build -type f -name '*.ipa' -print0)
+          if [ "$count" -eq 0 ]; then
+            echo '::error::Build completed without generating an IPA.'
+            exit 1
+          fi
+          for ipa in dist/*.ipa; do unzip -t "$ipa"; done
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: LangLa-unsigned-IPA
+          path: dist/*.ipa
+          if-no-files-found: error
+          retention-days: 14

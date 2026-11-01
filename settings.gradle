@@ -1,0 +1,2 @@
+rootProject.name = 'LangLa-iOS'
+include 'core', 'ios'

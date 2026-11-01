@@ -1,0 +1,7 @@
+.gradle/
+**/build/
+.DS_Store
+local.properties
+*.ipa
+*.p12
+*.mobileprovision
