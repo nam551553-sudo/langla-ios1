@@ -1473,6 +1473,7 @@ public class DataCenter {
             this.typeArr = reader.dis.readByte();
             System.out.println(this.typeArr);
         } catch (Exception ex5) {
+            Utlis.println(ex5, "Failed to parse arr_data_game");
             byte[] c;
             if ((c = Binary.c(gI().aU + "arr_data_game.beatdz")) != null) {
                 Binary.write("arr_data_game", c);

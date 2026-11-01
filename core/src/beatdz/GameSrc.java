@@ -770,7 +770,10 @@ public class GameSrc extends MainScreen {
 
     }
 
+    public String mapLoadError;
+
     public void createMap() {
+        this.mapLoadError = null;
         if (this.cx.size() > 0) {
             for (int var1 = this.cx.size() - 1; var1 >= 0; --var1) {
                 ((LangLa_en) this.cx.get(var1)).d();
@@ -787,6 +790,7 @@ public class GameSrc extends MainScreen {
             this.ba = false;
             LangLa_dp.a().b();
             if ((var27 = Binary.createReader("arr_map_" + this.mapID)) == null) {
+                this.mapLoadError = "Missing map data: " + this.mapID;
                 return;
             }
 
@@ -1353,6 +1357,8 @@ public class GameSrc extends MainScreen {
             cN = false;
             return;
         } catch (Exception var25) {
+            this.mapLoadError = var25.toString();
+            Utlis.println(var25, "Failed to create map " + this.mapID);
             try {
                 Message.f((byte) 4).send();
             } catch (Exception var22) {
@@ -4459,6 +4465,7 @@ public class GameSrc extends MainScreen {
         }
 
         this.vChar.addElement(var2);
+        if (var2.deTu != null) this.vChar.addElement(var2.deTu);
     }
 
     public void d(Message var1) throws java.io.IOException {
@@ -7530,17 +7537,6 @@ public class GameSrc extends MainScreen {
                     var6.x[15] = var8.reader.dis.readShort();
                     var6.x[16] = var8.reader.dis.readShort();
                     var6.x[17] = var8.reader.dis.readShort();
-                    if (var8.reader.dis.available() > 0) {
-                        var6.y.professionRank = var8.reader.dis.readByte();
-                        var6.y.professionPath = var8.reader.dis.readByte();
-                        var6.y.professionName = var8.reader.readUTF();
-                        var6.y.professionPathName = var8.reader.readUTF();
-                        var6.y.professionNextRequirement = var8.reader.readUTF();
-                        if (var8.reader.dis.available() > 0) {
-                            var6.y.professionTaskTitle = var8.reader.readUTF();
-                            var6.y.professionTaskDetail = var8.reader.readUTF();
-                        }
-                    }
                     var6.c[0].a("" + var6.e);
                     var6.c[1].a("" + var6.f);
                     var6.c[2].a("" + var6.h);
@@ -7617,17 +7613,6 @@ public class GameSrc extends MainScreen {
                     var2[28] = (long) var10.reader.dis.readByte();
                     var8.y.bd = var10.reader.dis.readByte();
                     var8.y.ba = var10.reader.dis.readByte();
-                    if (var10.reader.dis.available() > 0) {
-                        var8.y.professionRank = var10.reader.dis.readByte();
-                        var8.y.professionPath = var10.reader.dis.readByte();
-                        var8.y.professionName = var10.reader.readUTF();
-                        var8.y.professionPathName = var10.reader.readUTF();
-                        var8.y.professionNextRequirement = var10.reader.readUTF();
-                        if (var10.reader.dis.available() > 0) {
-                            var8.y.professionTaskTitle = var10.reader.readUTF();
-                            var8.y.professionTaskDetail = var10.reader.readUTF();
-                        }
-                    }
                 } catch (Exception var6) {
                 }
 
@@ -7635,8 +7620,6 @@ public class GameSrc extends MainScreen {
                 var11 = var11 + Caption.rG[3] + " " + var8.y.name + "\n";
                 var11 = var11 + Caption.ag + var8.y.level() + Caption.dp + var8.y.lvPk + "\n";
                 var11 = var11 + Caption.w + ": " + DataCenter.gI().DataNameChar[var8.y.idClass].name + " (" + DataCenter.gI().DataNameClass[var8.y.idhe].name + ")\n";
-                var11 = var11 + "Chức nghiệp: " + var8.y.professionName + "\n";
-                var11 = var11 + "Con đường: " + var8.y.professionPathName + "\n";
                 var11 = var11 + Caption.de + var8.y.hp + "/" + var8.y.hpFull + "\n";
                 var11 = var11 + Caption.df + var8.y.mp + "/" + var8.y.mpFull + "\n";
                 if (var8.y.aI != null) {

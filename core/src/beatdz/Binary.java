@@ -100,6 +100,15 @@ public class Binary {
                         var6.setRequestProperty("Range", "bytes=" + var3[0] + "-");
                     }
 
+                    // Missing assets are permanent errors; do not block image workers
+                    // with retries or unrelated connectivity probes for these URLs.
+                    int response = var6.getResponseCode();
+                    if (response >= 400 && response < 500 && response != 408 && response != 429) {
+                        Utlis.println("Asset HTTP " + response + ": " + var0);
+                        var19 = false;
+                        var6.disconnect();
+                        return null;
+                    }
                     var7 = new BufferedInputStream(var6.getInputStream());
                     if (var1 == null) {
                         var1 = new ByteArrayOutputStream();
@@ -161,7 +170,7 @@ public class Binary {
                         }
 
                         if (var1 == null) {
-                            if (Utlis.haveNetwork() && var4[0] <= var5) {
+                            if (var4[0] <= var5) {
                                 var4 = var4;
                                 var3 = var3;
                                 var2 = var2;
@@ -197,7 +206,7 @@ public class Binary {
                 }
 
                 if (var1 == null) {
-                    if (Utlis.haveNetwork() && var4[0] <= var5) {
+                    if (var4[0] <= var5) {
                         var4 = var4;
                         var3 = var3;
                         var2 = var2;
@@ -231,7 +240,7 @@ public class Binary {
             }
 
             if (var1 == null) {
-                if (Utlis.haveNetwork() && var4[0] <= var5) {
+                if (var4[0] <= var5) {
                     var4 = var4;
                     var3 = var3;
                     var2 = var2;

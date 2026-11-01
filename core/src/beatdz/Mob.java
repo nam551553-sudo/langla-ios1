@@ -814,7 +814,11 @@ public class Mob extends Entity {
                     var1.d(40);
                 }
 
-                LangLa_hz var2 = this.getMobTemplate().b[this.k];
+                LangLa_hz[] frames = this.getMobTemplate().b;
+                if (frames.length == 0) return;
+                int frameIndex = this.k >= 0 && this.k < frames.length ? this.k : 0;
+                LangLa_hz var2 = frames[frameIndex];
+                if (var2 == null) return;
                 if (this.N) {
                     var1.c(-1090781674);
                 } else if (this.O) {

@@ -393,9 +393,7 @@ public class LangLa_cz extends XYEntity {
             ImageRequestGate.finish(var0.e, false, System.currentTimeMillis());
             return;
         } finally {
-            if (var1 != null) {
-                GameSrc.gI().cb.add(var1);
-            }
+            if (var1 != null) imageReady(var0, var1);
 
         }
 
@@ -437,12 +435,22 @@ public class LangLa_cz extends XYEntity {
             return;
         } finally {
             ImageRequestGate.finish(var0.e, var1 != null, System.currentTimeMillis());
-            if (var1 != null) {
-                GameSrc.gI().cb.add(var1);
-            }
+            if (var1 != null) imageReady(var0, var1);
 
         }
 
+    }
+
+    private static void imageReady(LangLa_fb request, mImage image) {
+        if (request.e.startsWith("client_icon_")) {
+            // GameSrc assembles the HUD by copying these pixmaps. Uploading
+            // through cb calls mImage.d(), which destroys that CPU bitmap.
+            com.badlogic.gdx.Gdx.app.postRunnable(new Runnable() {
+                public void run() { DataCenter.gI().aH = false; }
+            });
+        } else {
+            GameSrc.gI().cb.add(image);
+        }
     }
 
     public static void T() {

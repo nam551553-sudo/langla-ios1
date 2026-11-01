@@ -22,4 +22,6 @@ final class ImageRequestGate {
         if (success) retryAt.remove(key);
         else retryAt.put(key, now + 5000L);
     }
+
+    static synchronized int pendingCount() { return pending.size(); }
 }

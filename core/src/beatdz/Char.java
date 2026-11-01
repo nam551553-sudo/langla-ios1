@@ -200,7 +200,7 @@ public class Char extends Entity {
     public byte rank;
     public byte professionRank;
     public byte professionPath;
-    public String professionName = "Shinobi";
+    public String professionName = "";
     public String professionPathName = "Chưa chọn";
     public String professionNextRequirement = "Genin: cap 39, chuyen can >= 2000 va full set do +12.";
     public String professionTaskTitle = "Nhiệm vụ chức nghiệp";
@@ -416,7 +416,7 @@ public class Char extends Entity {
         this.read(message, false);
     }
 
-    private void read(Message var1, boolean readProfession) throws java.io.IOException {
+    private void read(Message var1, boolean mapRecord) throws java.io.IOException {
         this.vEffect.clear();
         this.arrItemBag = null;
         this.arrItemBox = null;
@@ -456,20 +456,8 @@ public class Char extends Entity {
         this.selectDanhHieu = (byte) (var1.readByte() + 1);
         this.rank = var1.readByte();
         this.selectCaiTrang = var1.readByte();
-        if (readProfession) {
-            try {
-                this.professionRank = var1.readByte();
-                this.professionPath = var1.readByte();
-                this.professionName = var1.reader.readUTF();
-                this.professionPathName = var1.reader.readUTF();
-                this.professionNextRequirement = var1.reader.readUTF();
-                if (var1.reader.dis.available() > 0) {
-                    this.professionTaskTitle = var1.reader.readUTF();
-                    this.professionTaskDetail = var1.reader.readUTF();
-                }
-            } catch (Exception var5) {
-            }
-        }
+        // SRC_Server Char.write ends with an optional disciple, not profession.
+        if (mapRecord) this.readServerDisciple(var1);
         this.U();
     }
 
@@ -503,6 +491,7 @@ public class Char extends Entity {
         GameSrc.gI().pointNAP = var1.readInt();
         GameSrc.gI().loadAfterNextMap();
         this.arrItemBag = new Item[var1.readShort()];
+        this.arrItemExtend = new Item[6];
         Item[] var3 = this.arrItemExtend;
         Message var2 = var1;
 
@@ -522,9 +511,13 @@ public class Char extends Entity {
 
         readItemBody(var1, this.arrItemBody);
         readItemBody(var1, this.arrItemBody2);
-        this.readWingRenderInfo(var1, false);
-        this.readWingRenderInfo(var1, true);
         readItemBag(var1, this.arrItemBag);
+        // SRC_Server writes the optional combat book after the bag. Wing
+        // updates are separate packets; reading wing flags here shifts it all.
+        if (var1.readBoolean()) {
+            Item book = new Item();
+            book.read(var1);
+        }
         if (this.arrItemBody[10] != null) {
             this.aa = 50;
         }
@@ -574,22 +567,11 @@ public class Char extends Entity {
         this.rank = var1.readByte();
         this.selectCaiTrang = var1.readByte();
 
-        try {
-            this.professionRank = var1.readByte();
-            this.professionPath = var1.readByte();
-            this.professionName = var1.reader.readUTF();
-            this.professionPathName = var1.reader.readUTF();
-            this.professionNextRequirement = var1.reader.readUTF();
-            if (var1.reader.dis.available() > 0) {
-                this.professionTaskTitle = var1.reader.readUTF();
-                this.professionTaskDetail = var1.reader.readUTF();
-            }
-            GameSrc.gI().timeChatColor = var1.readInt();
-            GameSrc.gI().numTaskDoneKTNG = var1.readByte();
-            GameSrc.gI().doneTaskKTNG = var1.readBoolean();
-            this.readSkillClan(var1);
-        } catch (Exception var7) {
-        }
+        GameSrc.gI().timeChatColor = var1.readInt();
+        GameSrc.gI().numTaskDoneKTNG = var1.readByte();
+        GameSrc.gI().doneTaskKTNG = var1.readBoolean();
+        this.readSkillClan(var1);
+        this.readServerDisciple(var1);
 
         this.aF.clear();
         this.aC.clear();
@@ -597,6 +579,43 @@ public class Char extends Entity {
         this.aE.clear();
         this.U();
         this.bh = null;
+    }
+
+    /** Matches SRC_Server Disciple.writeMap, including short-sized overlays. */
+    private void readServerDisciple(Message message) throws java.io.IOException {
+        if (!message.readBoolean()) { this.deTu = null; return; }
+        Char child = new Char(message.readInt() + 1000000);
+        child.isDeTu = true;
+        child.name = message.readUTF();
+        child.idhe = message.readByte();
+        child.idChar = child.idhe;
+        child.gioiTinh = message.readByte();
+        child.idClass = message.readByte();
+        child.cx = child.ai = message.readShort();
+        child.cy = child.aj = message.readShort();
+        child.status = message.readByte();
+        child.speedMove = (short) (message.readShort() / 100);
+        child.hp = message.readInt();
+        child.hpFull = message.readInt();
+        child.lvPhanThan = message.readShort();
+        int slots = message.reader.readUnsignedByte();
+        for (int slot = 0; slot < slots; slot++) {
+            if (message.readBoolean()) {
+                short itemId = message.readShort();
+                if (slot < child.arrItemBody.length) child.arrItemBody[slot] = new Item(itemId);
+            }
+        }
+        if (message.readBoolean()) {
+            child.frameCanhStart = message.readShort();
+            child.frameCanhEnd = message.readShort();
+            child.tickCanh = message.readShort();
+            child.dxCanh = message.readShort();
+            child.dyCanh = message.readShort();
+        }
+        if (message.readBoolean()) {
+            for (int field = 0; field < 5; field++) message.readShort();
+        }
+        this.deTu = child;
     }
 
     public void readSkill(Message var1) throws java.io.IOException {
@@ -3315,10 +3334,7 @@ public class Char extends Entity {
     }
 
     private String getProfessionTagText() {
-        if (this.professionName == null || this.professionName.length() == 0) {
-            return "";
-        }
-        return "[" + this.professionName + "] ";
+        return "";
     }
 
     private int getProfessionNameColor() {

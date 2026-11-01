@@ -155,7 +155,7 @@ public class LangLa_kl extends LangLa_ge implements IKeyboard {
     }
 
     public LangLa_kl(MainScreen var1, Char var2, Skill[] var3) {
-        super(var1, new String[]{Caption.W, "Chức nghiệp"});
+        super(var1, new String[]{Caption.W});
         this.I = 32;
         this.J = 15;
         this.w = new int[17];
@@ -362,6 +362,7 @@ public class LangLa_kl extends LangLa_ge implements IKeyboard {
     }
 
     public void a(LangLa_jz var1, int var2, int var3) {
+        if (var1.b >= 4010 && var1.b <= 4046) return;
         boolean var13 = false;
         label826:
         {
@@ -439,7 +440,7 @@ public class LangLa_kl extends LangLa_ge implements IKeyboard {
                                                 if (var1.j.k >= 0) {
                                                     // Kiểm tra nếu có tab chế tạo đang mở
                                                     LangLa_cx currentTab = GameSrc.gI().H();
-                                                    if (currentTab instanceof LangLa_craft && this.k() == 2) {
+                                                    if (currentTab instanceof LangLa_craft && this.k() == 1) {
                                                         LangLa_craft craftTab = (LangLa_craft) currentTab;
                                                         Item clickedItem = this.y.arrItemBag[var1.j.k];
                                                         if (clickedItem != null && (clickedItem.id == 751 || clickedItem.id == 752)) {
@@ -1774,7 +1775,7 @@ public class LangLa_kl extends LangLa_ge implements IKeyboard {
                     default:
                         return;
                 }
-            } else if (this.k() == 1) {
+            } else if (this.k() == -1) {
                 this.d(var1);
             }
 
@@ -1783,7 +1784,7 @@ public class LangLa_kl extends LangLa_ge implements IKeyboard {
         }
     }
    /*
-   else if (this.k() == 1) {
+   else if (this.k() == -1) {
             this.O.a((Graphics)var1, 61);
             this.O.a(var1, this.cx, this.cy);
             switch(this.O.b.b) {
@@ -2828,14 +2829,14 @@ public class LangLa_kl extends LangLa_ge implements IKeyboard {
                     }
                 }
             }
-        } else if (this.k() == 1) {
+        } else if (this.k() == -1) {
             if (this.professionTabs != null) {
                 this.professionTabs.a();
             }
             if (this.professionContentScroll != null) {
                 this.professionContentScroll.a();
             }
-        } else if (this.k() == 2 && this.k() != this.j() && this.N != null) {
+        } else if (this.k() == 1 && this.k() != this.j() && this.N != null) {
             for (var3 = 0; var3 < this.N.length; ++var3) {
                 if (this.N[var3] != null) {
                     this.N[var3].a();
@@ -3056,7 +3057,7 @@ public class LangLa_kl extends LangLa_ge implements IKeyboard {
                     return;
             }
         } else {
-            if (this.k() == 2 && this.k() != this.j()) {
+            if (this.k() == 1 && this.k() != this.j()) {
                 this.y();
             }
         }
@@ -3138,6 +3139,7 @@ public class LangLa_kl extends LangLa_ge implements IKeyboard {
     }
 
     public void a(int var1) {
+        if (var1 < 0 || var1 >= this.k.c.length) var1 = 0;
         super.a(var1);
         if (this.b != null) {
             this.b.d();
@@ -3270,7 +3272,7 @@ public class LangLa_kl extends LangLa_ge implements IKeyboard {
         }
 
         DataCenter.gI();
-        if (this.k() == 1) {
+        if (this.k() == -1) {
             var1.addElement(this.professionTabs.b());
             if (this.professionContentScroll != null) {
                 if (this.professionTab == 1 && this.professionMilestoneButtons != null) {

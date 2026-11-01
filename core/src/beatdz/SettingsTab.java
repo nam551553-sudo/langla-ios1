@@ -623,7 +623,7 @@ public class SettingsTab extends LangLa_fo {
         var1.close();
     }
 
-    public static SettingsTab gI() {
+    public static synchronized SettingsTab gI() {
         if (D == null) {
             D = new SettingsTab();
         }

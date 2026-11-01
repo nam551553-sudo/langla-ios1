@@ -25,8 +25,8 @@ public final class RenderRegressionCheck {
         return null;
     }
 
-    public static void main(String[] args) throws Exception {
-        Pbuffer context = new Pbuffer(128, 96, new PixelFormat(), null);
+    static Pbuffer startContext(final int width, final int height) throws Exception {
+        Pbuffer context = new Pbuffer(width, height, new PixelFormat(), null);
         context.makeCurrent();
         GdxNativesLoader.load();
         java.lang.reflect.Constructor<?> glConstructor = Class.forName("com.badlogic.gdx.backends.lwjgl.LwjglGL20").getDeclaredConstructor();
@@ -36,12 +36,17 @@ public final class RenderRegressionCheck {
                 (proxy, method, values) -> method.getName().equals("getType") ? ApplicationType.Desktop : defaultValue(method.getReturnType()));
         Gdx.graphics = (com.badlogic.gdx.Graphics) Proxy.newProxyInstance(com.badlogic.gdx.Graphics.class.getClassLoader(),
                 new Class<?>[]{com.badlogic.gdx.Graphics.class}, (proxy, method, values) -> {
-                    if (method.getName().equals("getWidth") || method.getName().equals("getBackBufferWidth")) return 128;
-                    if (method.getName().equals("getHeight") || method.getName().equals("getBackBufferHeight")) return 96;
+                    if (method.getName().equals("getWidth") || method.getName().equals("getBackBufferWidth")) return width;
+                    if (method.getName().equals("getHeight") || method.getName().equals("getBackBufferHeight")) return height;
                     if (method.getName().equals("getGL20")) return Gdx.gl20;
                     return defaultValue(method.getReturnType());
                 });
         Gdx.files = new LwjglFiles();
+        return context;
+    }
+
+    public static void main(String[] args) throws Exception {
+        Pbuffer context = startContext(128, 96);
         DataCenter.gI().zoomLevel = DataCenter.gI().zoomLevelScreen = 1;
         FixtureCanvas canvas = new FixtureCanvas();
         canvas.camera = new OrthographicCamera();
